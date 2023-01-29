@@ -1,0 +1,56 @@
+body{
+    background-color: #191F2C !important;
+    background-image: url('../img/bg.png');
+    font-family: 'Roboto';
+}
+.container{
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+
+header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+
+
+header nav ul {
+    display: flex;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+header nav ul li{
+    margin-right: 20px;
+}
+
+header nav ul li a{
+    text-decoration: none;
+    color: white;
+}
+
+
+
+.logo-wrap p{
+    width: fit-content;
+    color: white;
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 24px;
+    position: absolute;
+    top: 31px;
+    left: 79px;
+    
+}
+
+/* .pizza-list{
+    display: grid;
+    grid-template-columns: ;
+}
+ */
+

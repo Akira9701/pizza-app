@@ -39,3 +39,8 @@
 .read-the-docs {
   color: #888;
 }
+
+
+main{
+  background-image: url(./app/assets/img/bg.png);
+}
