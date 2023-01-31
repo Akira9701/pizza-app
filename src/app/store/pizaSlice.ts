@@ -106,8 +106,6 @@ const pizaSlice = createSlice({
             }).addCase(getPizza.fulfilled, (state, action) => {
                 state.pizza = action.payload;
                 console.log('Seted')
-                // console.log(action);
-                // console.log(state.pizza);
             }).addCase(getPizza.rejected, (state, action) => {
                 console.log('Danger')
             })
