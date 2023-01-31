@@ -8,6 +8,12 @@ interface Element extends MouseEvent<HTMLDivElement> {
     target: HTMLDivElement
 }
 
+interface IPizzaInterface extends IPizzaItem{
+
+}
+
+
+
 interface ErrorsCurent{
     name: string;
     surname: string;
@@ -27,7 +33,7 @@ const Form: FC = () => {
         if(e.target.classList.contains('form-container')) e.target.classList.add('hidden');
     }
     const [selectedPizza, setSelectedPiza] = useState('');
-    const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"", bort: "", price: pizza.price});
+    const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"", bort: "", price: pizza.price.default,});
     const [errors, setErrors] = useState({name: "", surname: "", patronymic: "", city: "", street: "", home: "", room: "", message: "",  birthday: "", registration: ""});
     
     const validatorConfig = {
@@ -136,7 +142,11 @@ const Form: FC = () => {
 
     
     useEffect(() => {
-        setSelectedPiza(pizza.name)
+        setSelectedPiza(pizza.name);
+        setData((prevState) => ({
+            ...prevState, price:pizza.price.default,
+        }))
+        
     }, [pizza])
     return ( 
         <div className="form-container hidden  fixed w-full h-full top-0 left-0 bg-black/[0.8]	flex items-center justify-center" onClick={toggleForm} >
@@ -224,12 +234,43 @@ const Form: FC = () => {
                                 ></textarea>
                             </div>
                         </div>
+
+                        <div className="flex justify-center">
+                            <div className="mb-3 w-72">
+                                <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Размер пиццы</label>
+
+                                <select className="form-select appearance-none
+                                block
+                                w-full
+                                px-3
+                                py-1.5
+                                text-base
+                                font-normal
+                                text-gray-700
+                                bg-white bg-clip-padding bg-no-repeat
+                                border border-solid border-gray-300
+                                rounded
+                                transition
+                                ease-in-out
+                                m-0
+                                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
+                                    setData((prevState) => ({
+                                        ...prevState, price: pizza.price.default + Number(e.target.selectedOptions[0].value),
+                                    }))
+                                }}>
+                                    {
+                                        
+                                        Object.keys(pizza.price.size).map((item) => <option value={pizza.price.size[item as keyof IPizzaItem ]}>{item}</option>)
+                                    }
+                                </select>
+                            </div>
+                        </div>
                         
                 </div>
                 </div>
              
 
-                <p className='price mb-4 text-2xl'>{pizza.price.default} руб. к оплате</p>
+                <p className='price mb-4 text-2xl'>{data.price} руб. к оплате</p>
                 <button type="submit" className="
                 w-full
                 px-6
