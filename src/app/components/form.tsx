@@ -1,8 +1,9 @@
 import React, { FC, MouseEvent, useState, useEffect} from 'react'
 import { IPizzaItem } from '../types/index';
-import { useAppSelector } from '../hooks/reduxHooks'
+import { useAppSelector, useAppDispatch } from '../hooks/reduxHooks'
 import TextField from './textField';
 import axios from 'axios';
+import { clearBasket } from '../store/pizaSlice';
 
 interface Element extends MouseEvent<HTMLDivElement> {
     target: HTMLDivElement
@@ -48,11 +49,19 @@ interface DataCurent{
     price: number
 }
 
-const Form: FC = () => {
+interface IFormStatus {
+    side: string
+}
+
+const Form: FC<IFormStatus> = ({side}) => {
     const pizza:IPizzaItem = useAppSelector(state => state.pizza.order);
     const toggleForm = (e:Element) => {
         if(e.target.classList.contains('form-container')) e.target.classList.add('hidden');
     }
+    const sendPizzas = useAppSelector(state=>state.pizza.basketSend);
+    const displayPizzas = useAppSelector(state=>state.pizza.basketDisplay);
+    const dispatch = useAppDispatch();
+
     const [selectedPizza, setSelectedPiza] = useState('');
     const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"large", crust: "cheesy", price: pizza.price.default,});
     const [errors, setErrors] = useState({name: "", surname: "", patronymic: "", city: "", street: "", home: "", room: "", message: "",  birthday: "", registration: ""});
@@ -124,17 +133,13 @@ const Form: FC = () => {
             ...prevState, [e.target.name]:e.target.value,
         }))
     }
-    const handleSubmit = (e:React.SyntheticEvent) => { 
+    const handleSubmit = (e:React.SyntheticEvent) => {
+        console.log(sendPizzas[0]);
+ 
         e.preventDefault();
         if(handleValidation(data, validatorConfig)){
             axios.post('https://shift-winter-2023-backend.onrender.com/api/pizza/createOrder', {
-                pizzas: [
-                    {
-                        id: pizza.id,
-                        size: data.size,
-                        crust: data.crust
-                    }
-                ],
+                pizzas: [...sendPizzas],
                 details:{
                     user: {
                         firstname: data.name,
@@ -154,6 +159,7 @@ const Form: FC = () => {
             }).then(function (response) {
                 alert("Заказ отправлен");
                 console.log(response.data.order);
+                dispatch(clearBasket({}));
                 const formContainer = document.querySelector('.form-container');
                 formContainer?.classList.toggle('hidden')
               })
@@ -165,7 +171,9 @@ const Form: FC = () => {
         }
     }
     useEffect(() => {
-        setSelectedPiza(pizza.name);
+        const names = displayPizzas.map((item) => item.name).join();
+        console.log(names);
+        setSelectedPiza(names);
         setData((prevState) => ({
             ...prevState, price:pizza.price.default
             + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === data.crust )[0][1])
@@ -175,6 +183,84 @@ const Form: FC = () => {
         
         
     }, [pizza])
+
+
+    const formAny = () => {
+        return (
+            <>
+            <div className="flex justify-center">
+                <div className="mb-8 w-72">
+                    <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Размер пиццы</label>
+
+                    <select className="form-select appearance-none
+                    block
+                    w-full
+                    px-3
+                    py-1.5
+                    text-base
+                    font-normal
+                    text-gray-700
+                    bg-white bg-clip-padding bg-no-repeat
+                    border border-solid border-gray-300
+                    rounded
+                    transition
+                    ease-in-out
+                    m-0
+                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
+                        console.log(e.target.selectedOptions[0].value)
+                        setData((prevState) => ({
+                            ...prevState, size: e.target.selectedOptions[0].value, price: pizza.price.default 
+                            + Number(Object.entries(pizza.price.size).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
+                            + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === data.crust )[0][1])
+                        }))
+                    }}>
+                        {
+                            
+                            Object.entries(pizza.price.size).map(([key, value]) => <option key={key}  value={key}>{key}</option>)
+                        }
+                    </select>
+                </div>
+                </div>
+                <div className="flex justify-center">
+                <div className="mb-3 w-72">
+                    <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Борты пиццы</label>
+
+                    <select className="form-select appearance-none
+                    block
+                    w-full
+                    px-3
+                    py-1.5
+                    text-base
+                    font-normal
+                    text-gray-700
+                    bg-white bg-clip-padding bg-no-repeat
+                    border border-solid border-gray-300
+                    rounded
+                    transition
+                    ease-in-out
+                    m-0
+                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
+                        console.log(e.target.selectedOptions[0].textContent);
+                        console.log()
+                        setData((prevState) => ({
+                            ...prevState, crust: e.target.selectedOptions[0].value, price: pizza.price.default 
+                            + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
+                            + (Number(Object.entries(pizza.price.size).filter((item) => item[0] === data.size )[0][1]))
+                        }))
+                    }}>
+                        {/* <option value="none">default</option> */}
+                        {
+                            
+                            Object.entries(pizza.price.crust).map(([key, value]) => <option   key={key}  value={key} >{key}</option>)
+                        }
+                    </select>
+                </div>
+            </div>
+            </>
+
+        )
+    }
+
     return ( 
         <div className="form-container hidden  fixed w-full h-full top-0 left-0 bg-black/[0.8]	flex items-center justify-center" onClick={toggleForm} >
             <div className="block p-6 rounded-lg shadow-lg bg-white ">
@@ -262,74 +348,7 @@ const Form: FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex justify-center">
-                            <div className="mb-8 w-72">
-                                <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Размер пиццы</label>
-
-                                <select className="form-select appearance-none
-                                block
-                                w-full
-                                px-3
-                                py-1.5
-                                text-base
-                                font-normal
-                                text-gray-700
-                                bg-white bg-clip-padding bg-no-repeat
-                                border border-solid border-gray-300
-                                rounded
-                                transition
-                                ease-in-out
-                                m-0
-                                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
-                                    console.log(e.target.selectedOptions[0].value)
-                                    setData((prevState) => ({
-                                        ...prevState, size: e.target.selectedOptions[0].value, price: pizza.price.default 
-                                        + Number(Object.entries(pizza.price.size).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
-                                        + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === data.crust )[0][1])
-                                    }))
-                                }}>
-                                    {
-                                        
-                                        Object.entries(pizza.price.size).map(([key, value]) => <option key={key}  value={key}>{key}</option>)
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex justify-center">
-                            <div className="mb-3 w-72">
-                                <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Борты пиццы</label>
-
-                                <select className="form-select appearance-none
-                                block
-                                w-full
-                                px-3
-                                py-1.5
-                                text-base
-                                font-normal
-                                text-gray-700
-                                bg-white bg-clip-padding bg-no-repeat
-                                border border-solid border-gray-300
-                                rounded
-                                transition
-                                ease-in-out
-                                m-0
-                                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
-                                    console.log(e.target.selectedOptions[0].textContent);
-                                    console.log()
-                                    setData((prevState) => ({
-                                        ...prevState, crust: e.target.selectedOptions[0].value, price: pizza.price.default 
-                                        + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
-                                        + (Number(Object.entries(pizza.price.size).filter((item) => item[0] === data.size )[0][1]))
-                                    }))
-                                }}>
-                                    {/* <option value="none">default</option> */}
-                                    {
-                                        
-                                        Object.entries(pizza.price.crust).map(([key, value]) => <option   key={key}  value={key} >{key}</option>)
-                                    }
-                                </select>
-                            </div>
-                        </div>
+                        {side !== "basket" && formAny()}
                         
                 </div>
                 </div>

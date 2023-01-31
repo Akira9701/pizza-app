@@ -63,6 +63,10 @@ const pizaSlice = createSlice({
         addPizzaToBasketDisplay(state, action){
             state.basketDisplay.push(action.payload);
         },
+        addPizzaToBasketDisplayAlone(state, action){
+            state.basketDisplay = [action.payload];
+        }
+        ,
         addPizzaToBasketSend(state, action){
             state.basketSend.push(action.payload);
             console.log(state.basketSend);
@@ -70,6 +74,9 @@ const pizaSlice = createSlice({
         addPizzaToOrder(state, action){
             state.order = {...action.payload};
             console.log(state.order)
+        },
+        addToBasketSendAlone(state, action){
+            state.basketSend = [action.payload]
         },
         changePizzaBasketSend(state, action){
             const basketSend = [...state.basketSend];
@@ -86,6 +93,10 @@ const pizaSlice = createSlice({
             state.basketDisplay = basketDisplay;
             state.basketSend = basketSend;
         },
+        clearBasket(state, action){
+            state.basketSend = []
+            state.basketDisplay = []
+        }
 
     },
     extraReducers: (builder) => {
@@ -102,5 +113,5 @@ const pizaSlice = createSlice({
             })
     }
 })
-export const {addPizzaToBasketDisplay,addPizzaToBasketSend , addPizzaToOrder, changePizzaBasketSend, removePizzaFromBasket} = pizaSlice.actions;
+export const {addPizzaToBasketDisplay,addPizzaToBasketSend , addPizzaToOrder, changePizzaBasketSend, removePizzaFromBasket, addToBasketSendAlone, addPizzaToBasketDisplayAlone, clearBasket} = pizaSlice.actions;
 export default pizaSlice.reducer;

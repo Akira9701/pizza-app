@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { IPizzaItem } from '../types/index';
 import { useAppDispatch } from '../hooks/reduxHooks'
 import { addPizzaToOrder } from '../store/pizaSlice';
-import { addPizzaToBasketDisplay, addPizzaToBasketSend } from '../store/pizaSlice';
+import { addPizzaToBasketDisplay, addPizzaToBasketSend, addToBasketSendAlone, addPizzaToBasketDisplayAlone } from '../store/pizaSlice';
 interface IPizzaItemComponent {
     pizza: IPizzaItem,
  
@@ -12,6 +12,12 @@ const PizzaItem: FC<IPizzaItemComponent> = ({pizza}) => {
     
     const dispatch = useAppDispatch();
     const handleAddItemToOrder = (): void => {
+        dispatch(addToBasketSendAlone({
+            id: pizza.id,
+            size: "small",
+            crust: "cheezy"
+        }))
+        dispatch(addPizzaToBasketDisplayAlone(pizza));
         dispatch(addPizzaToOrder(pizza));
         const formContainer = document.querySelector('.form-container');
         formContainer?.classList.toggle('hidden')

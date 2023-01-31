@@ -29,7 +29,7 @@ const PizzaList: FC<PizzaList> = ({pizza}) => {
                     >Заказать пиццу</button> */}
                 </div>
             </div>
-            <Form />
+            <Form side='not-basket' />
         </>
 
     );
