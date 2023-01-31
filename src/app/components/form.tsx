@@ -8,22 +8,18 @@ interface Element extends MouseEvent<HTMLDivElement> {
     target: HTMLDivElement
 }
 
-
-interface IConfigItem{
-    email: {
-        isRequired: {
-            message: string,
-        },
-        isEmail:{
-            message: string
-        }
-    }
-
+interface ErrorsCurent{
+    name: string;
+    surname: string;
+    patronymic: string;
+    city: string;
+    street: string;
+    home: string;
+    room: string;
+    message: string;
+    birthday: string;
+    registration: string;
 }
-
-// interface ItemsList {
-//     items: IPizzaItem[]
-// }
 
 const Form: FC = () => {
     const pizza = useAppSelector(state => state.pizza.order);
@@ -31,16 +27,20 @@ const Form: FC = () => {
         if(e.target.classList.contains('form-container')) e.target.classList.add('hidden');
     }
     const [selectedPizza, setSelectedPiza] = useState('');
-    const [data, setData] = useState({name: "", surname: "", patronymic: "", city: "", street: "", home: "", room: "", message: "", birthday: ""});
-    const [errors, setErrors] = useState({name: "", surname: "", patronymic: "", city: "", street: "", home: "", room: "", message: "",  birthday: ""});
+    const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"", bort: "", price: pizza.price});
+    const [errors, setErrors] = useState({name: "", surname: "", patronymic: "", city: "", street: "", home: "", room: "", message: "",  birthday: "", registration: ""});
+    
     const validatorConfig = {
         name: {isRequired: {message: "Обязательное Поле Имя не заполнено"}, min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 32", value: 32}},
         surname: {isRequired: {message: "Поле Фамилия не заполнено"},  min : {message: "Символов должно быть больше 2" , value: 2}, max : {message: "Символов должно быть меньше 32", value: 32}},
-        patronymic: {isRequired: {message: "Поле Отчетсво не заполнено"},  min : {message: "Символов должно быть больше 2", }, max : {message: "Символов должно быть меньше 32", value: 32}},
+        patronymic: { min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 32", value: 32}},
         birthday: {isRequired: {message: "Дата рождения не указана"}, isOlder: {message: "Вам меньше 18"}},
-        city: {isRequired: {message: "Обязательное Поле Город не заполнено"}},
-        street: {isRequired: {message: "Обязательное Поле Улица не заполнено"}},
-        home: {isRequired: {message: "Обязательное Поле Дом не заполнено"}},
+        city: {isRequired: {message: "Обязательное Поле Город не заполнено"},  min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 50", value: 50} },
+        street: {isRequired: {message: "Обязательное Поле Улица не заполнено"},  min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 60", value: 60}},
+        home: {isRequired: {message: "Обязательное Поле Дом не заполнено"},  min : {message: "Символов должно быть больше 1", value: 1}, max : {message: "Символов должно быть меньше 10", value: 10}},
+        room: {isRequired: {message: "Обязательное Поле Квартира не заполнено"},  min : {message: "Символов должно быть больше 1", value: 1}, max : {message: "Символов должно быть меньше 10", value: 10}},
+        registration: { min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 50", value: 50}},
+
         // room: {isRequired: {message: "Поле Квартира не заполнено"}},
         
     }
@@ -54,24 +54,24 @@ const Form: FC = () => {
                 switch(danger){
                     case 'isRequired':{
                         console.log(1)
-                        data[key].length === 0 ? (errorsCurent[key] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key] = ""
+                        data[key].length === 0 ? (errorsCurent[key as keyof ErrorsCurent] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key as keyof ErrorsCurent] = ""
                         break
                         
                     }
                     case 'min':{
 
-                        data[key].length < 3 ? (errorsCurent[key] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key] = ""
+                        data[key].length < validatorConfig[key][danger].value && data[key].length !== 0 ? (errorsCurent[key as keyof ErrorsCurent] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key as keyof ErrorsCurent] = ""
                         break
 
                     }
                     case 'max':{
 
-                        data[key].length > 32 ? (errorsCurent[key] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key] = ""
+                        data[key].length > validatorConfig[key][danger].value && data[key].length !== 0 ? (errorsCurent[key as keyof ErrorsCurent] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key as keyof ErrorsCurent] = ""
                         break
 
                     }
                     case 'isOlder':{
-                        (new Date().getFullYear() - new Date(data[key]).getFullYear()) < 18 ? (errorsCurent[key] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key] = ""
+                        (new Date().getFullYear() - new Date(data[key]).getFullYear()) < 18 ? (errorsCurent[key as keyof ErrorsCurent] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key as keyof ErrorsCurent] = ""
                         break
 
                     }
@@ -90,22 +90,43 @@ const Form: FC = () => {
         return status;
         
     }
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>):void => {
-        console.log();
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>):void {
         setData((prevState) => ({
             ...prevState, [e.target.name]:e.target.value,
         }))
-        console.log(data);
     }
+
     const handleSubmit = (e:React.SyntheticEvent) => { 
         e.preventDefault();
         if(handleValidation(data, validatorConfig)){
-            axios.post('dsadasd', {
+            axios.post('https://shift-winter-2023-backend.onrender.com/api/pizza/createOrder', {
                 pizzas: [
                     selectedPizza
-                ]
-            })
-            alert("Заказ отправлен");
+                ],
+                details:{
+                    user: {
+                        firstname: data.name,
+                        lastName: data.surname,
+                        birthDay: data.birthday,
+                        registrationAddress: data.registration,
+                    },
+                    address: {
+                        city: data.city,
+                        street: data.street,
+                        house: data.home,
+                        apartment: data.home,
+                        comment: data.comment
+                    }
+                },
+
+            }).then(function (response) {
+                alert("Заказ отправлен");
+                console.log(response.data.order);
+              })
+              .catch(function (error) {
+                alert("Что-то пошло не так, повторите попытку позже");
+                console.log(error);
+              });
             const formContainer = document.querySelector('.form-container');
             formContainer?.classList.toggle('hidden')
         }
@@ -118,16 +139,41 @@ const Form: FC = () => {
         setSelectedPiza(pizza.name)
     }, [pizza])
     return ( 
-        <div className="form-container hidden  fixed w-full h-full top-0 left-0 bg-black/[0.8]	flex items-center justify-center" onClick={(e:Element) => toggleForm(e)}>
+        <div className="form-container hidden  fixed w-full h-full top-0 left-0 bg-black/[0.8]	flex items-center justify-center" onClick={toggleForm} >
             <div className="block p-6 rounded-lg shadow-lg bg-white ">
             <form onSubmit={handleSubmit}>
                 <div className="field-wrap flex">
                     <div className="form-data mr-3">
                         <TextField error={errors.name} value={data.name} type="name" name="name" title="Ваше имя" onChange={handleChange} />
                         <TextField error={errors.surname} value={data.surname} type="text" name="surname" title="Ваша фамилия" onChange={handleChange} />
-                        <TextField error={errors.patronymic} value={data.patronymic} type="text" name="patronymic" title="Ваше отчество" onChange={handleChange} />
+                        <TextField error={errors.patronymic} value={data.patronymic} type="text" name="patronymic" title="Ваше отчество" onChange={handleChange} readonly={data.patronymic === "Отсутствует" ? true : false} />
+                        <div className="flex justify-between items-center mb-6">
+                            <div className="htmlForm-group htmlForm-check">
+                                <input type="checkbox"
+                                className="htmlForm-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                id="exampleCheck2" onChange={(e) => {
+                                    console.log()
+                                    setData((prevState) => ({...prevState, patronymic: e.target.checked ? "Отсутствует" : ""}));
+                                }}/>
+                                <label className="htmlForm-check-label inline-block text-gray-800" htmlFor="exampleCheck2">Нету отчества</label>
+                            </div>
+
+                        </div>
                         <TextField error={errors.birthday} value={data.birthday} type="date" name="birthday" title="Дата рождения" onChange={handleChange} />
-                        <div className="htmlForm-group mb-6  w-72">
+                        <TextField error={errors.registration} value={data.registration} type="text" name="registration" title="Адресс регистрации" onChange={handleChange} />
+
+                    </div>
+                    <div className="form-adress mr-3">
+                        <TextField error={errors.city} value={data.city} type="text" name='city' title='Ваш город' onChange={handleChange} />
+                        <TextField error={errors.street} value={data.street} type="text" name='street' title='Улица' onChange={handleChange} />
+                        <TextField error={errors.home} value={data.home} type="text" name='home' title='Дом' onChange={handleChange} />
+                        <TextField error={errors.room} value={data.room} type="text" name='room' title='Квартира' onChange={handleChange} />
+
+           
+
+                    </div>
+                    <div className="pizza-wrap">
+                        <div className="htmlForm-group mb-2  w-72 h-24	">
                             <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Ваша пицца</label>
                             <input type="text" className="htmlForm-control
                             block
@@ -144,33 +190,17 @@ const Form: FC = () => {
                             ease-in-out
                             m-0
                             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="exampleInputEmail2"
-                            aria-describedby="emailHelp" placeholder="Enter email" value={selectedPizza} defaultValue="Пицца" onChange={() => {
-
-                            }}
-        />
+                            aria-describedby="emailHelp" placeholder="Enter email" value={selectedPizza} readOnly={true}
+                            />
                         </div>
-                        <div className="flex justify-between items-center mb-6">
-                            <div className="htmlForm-group htmlForm-check">
-                                <input type="checkbox"
-                                className="htmlForm-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                id="exampleCheck2" />
-                                <label className="htmlForm-check-label inline-block text-gray-800" htmlFor="exampleCheck2">Remember me</label>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div className="form-adress">
-                        <TextField error={errors.city} value={data.city} type="text" name='city' title='Ваш город' onChange={handleChange} />
-                        <TextField error={errors.street} value={data.street} type="text" name='street' title='Улица' onChange={handleChange} />
-                        <TextField error={errors.home} value={data.home} type="text" name='home' title='Дом' onChange={handleChange} />
-                        <TextField error={errors.room} value={data.room} type="text" name='room' title='Квартира' onChange={handleChange} />
-                        <div className="">
+                        <div>
                             <div className="mb-3 ">
                                 <label htmlFor="exampleFormControlTextarea1" className="form-label inline-block mb-2 text-gray-700"
-                                >Example textarea</label
-                                >
+                                >Сообщение курьеру
+                                </label>
                                 <textarea
-                                class="
+                                className="
+                                    h-144
                                     form-control
                                     block
                                     w-full
@@ -188,16 +218,18 @@ const Form: FC = () => {
                                     focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
                                 "
                                 id="exampleFormControlTextarea1"
-                                rows="3"
-                                placeholder="Your message"
+                                placeholder="Текст...."
+                                name='comment'
+                                onChange={handleChange}
                                 ></textarea>
                             </div>
                         </div>
-           
-
-                    </div>
+                        
                 </div>
+                </div>
+             
 
+                <p className='price mb-4 text-2xl'>{pizza.price.default} руб. к оплате</p>
                 <button type="submit" className="
                 w-full
                 px-6

@@ -4,12 +4,13 @@ interface IField {
     title: string,
     name: string,
     type: string,
-    error: string
-    onChange: Function
+    error: string,
+    readonly?: boolean,
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
-const TextField:FC<IField> = ({value, title, onChange, name, type, error}) => {
+const TextField:FC<IField> = ({value, title, onChange, name, type, error, readonly}) => {
     return ( 
-        <div className="htmlForm-group mb-3  w-72 h-24	">
+        <div className="htmlForm-group mb-2  w-72 h-24	">
             <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">{title}</label>
             <input type={type} className="htmlForm-control
             block
