@@ -8,9 +8,14 @@ interface Element extends MouseEvent<HTMLDivElement> {
     target: HTMLDivElement
 }
 
-interface IPizzaInterface extends IPizzaItem{
 
+
+interface IPizzaCrust extends IPizzaItem{
+    cheesy: number
+    cheesySausage: number
 }
+
+
 
 
 
@@ -27,15 +32,30 @@ interface ErrorsCurent{
     registration: string;
 }
 
+interface DataCurent{
+    name: string;
+    surname: string;
+    patronymic: string;
+    city: string;
+    street: string;
+    home: string;
+    room: string;
+    message: string;
+    birthday: string;
+    registration: string;
+    size: string,
+    crust: string,
+    price: number
+}
+
 const Form: FC = () => {
-    const pizza = useAppSelector(state => state.pizza.order);
+    const pizza:IPizzaItem = useAppSelector(state => state.pizza.order);
     const toggleForm = (e:Element) => {
         if(e.target.classList.contains('form-container')) e.target.classList.add('hidden');
     }
     const [selectedPizza, setSelectedPiza] = useState('');
-    const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"", bort: "", price: pizza.price.default,});
+    const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"large", crust: "cheesy", price: pizza.price.default,});
     const [errors, setErrors] = useState({name: "", surname: "", patronymic: "", city: "", street: "", home: "", room: "", message: "",  birthday: "", registration: ""});
-    
     const validatorConfig = {
         name: {isRequired: {message: "Обязательное Поле Имя не заполнено"}, min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 32", value: 32}},
         surname: {isRequired: {message: "Поле Фамилия не заполнено"},  min : {message: "Символов должно быть больше 2" , value: 2}, max : {message: "Символов должно быть меньше 32", value: 32}},
@@ -45,10 +65,7 @@ const Form: FC = () => {
         street: {isRequired: {message: "Обязательное Поле Улица не заполнено"},  min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 60", value: 60}},
         home: {isRequired: {message: "Обязательное Поле Дом не заполнено"},  min : {message: "Символов должно быть больше 1", value: 1}, max : {message: "Символов должно быть меньше 10", value: 10}},
         room: {isRequired: {message: "Обязательное Поле Квартира не заполнено"},  min : {message: "Символов должно быть больше 1", value: 1}, max : {message: "Символов должно быть меньше 10", value: 10}},
-        registration: { min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 50", value: 50}},
-
-        // room: {isRequired: {message: "Поле Квартира не заполнено"}},
-        
+        registration: { min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 50", value: 50}},        
     }
     const handleValidation = (data:any , validatorConfig:any):boolean => {
         
@@ -81,6 +98,12 @@ const Form: FC = () => {
                         break
 
                     }
+                    case 'isBadSymbol':{
+                        const isBadSymbol = /;/g;
+                        isBadSymbol.test(data[key]) ? (errorsCurent[key as keyof ErrorsCurent] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key as keyof ErrorsCurent] = ""
+                        break
+                        
+                    }
                     
                 }
                 if(stop){
@@ -96,18 +119,21 @@ const Form: FC = () => {
         return status;
         
     }
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>):void {
+    function handleChange(e:  React.ChangeEvent<HTMLInputElement> |  React.ChangeEvent<HTMLTextAreaElement>):void {
         setData((prevState) => ({
             ...prevState, [e.target.name]:e.target.value,
         }))
     }
-
     const handleSubmit = (e:React.SyntheticEvent) => { 
         e.preventDefault();
         if(handleValidation(data, validatorConfig)){
             axios.post('https://shift-winter-2023-backend.onrender.com/api/pizza/createOrder', {
                 pizzas: [
-                    selectedPizza
+                    {
+                        id: pizza.id,
+                        size: data.size,
+                        crust: data.crust
+                    }
                 ],
                 details:{
                     user: {
@@ -128,24 +154,25 @@ const Form: FC = () => {
             }).then(function (response) {
                 alert("Заказ отправлен");
                 console.log(response.data.order);
+                const formContainer = document.querySelector('.form-container');
+                formContainer?.classList.toggle('hidden')
               })
               .catch(function (error) {
                 alert("Что-то пошло не так, повторите попытку позже");
                 console.log(error);
               });
-            const formContainer = document.querySelector('.form-container');
-            formContainer?.classList.toggle('hidden')
+
         }
     }
-
-
-
-    
     useEffect(() => {
         setSelectedPiza(pizza.name);
         setData((prevState) => ({
-            ...prevState, price:pizza.price.default,
+            ...prevState, price:pizza.price.default
+            + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === data.crust )[0][1])
+            + Number(Object.entries(pizza.price.size).filter((item) => item[0] === data.size )[0][1])
+            ,
         }))
+        
         
     }, [pizza])
     return ( 
@@ -236,7 +263,7 @@ const Form: FC = () => {
                         </div>
 
                         <div className="flex justify-center">
-                            <div className="mb-3 w-72">
+                            <div className="mb-8 w-72">
                                 <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Размер пиццы</label>
 
                                 <select className="form-select appearance-none
@@ -254,13 +281,51 @@ const Form: FC = () => {
                                 ease-in-out
                                 m-0
                                 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
+                                    console.log(e.target.selectedOptions[0].value)
                                     setData((prevState) => ({
-                                        ...prevState, price: pizza.price.default + Number(e.target.selectedOptions[0].value),
+                                        ...prevState, size: e.target.selectedOptions[0].value, price: pizza.price.default 
+                                        + Number(Object.entries(pizza.price.size).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
+                                        + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === data.crust )[0][1])
                                     }))
                                 }}>
                                     {
                                         
-                                        Object.keys(pizza.price.size).map((item) => <option value={pizza.price.size[item as keyof IPizzaItem ]}>{item}</option>)
+                                        Object.entries(pizza.price.size).map(([key, value]) => <option key={key}  value={key}>{key}</option>)
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex justify-center">
+                            <div className="mb-3 w-72">
+                                <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">Борты пиццы</label>
+
+                                <select className="form-select appearance-none
+                                block
+                                w-full
+                                px-3
+                                py-1.5
+                                text-base
+                                font-normal
+                                text-gray-700
+                                bg-white bg-clip-padding bg-no-repeat
+                                border border-solid border-gray-300
+                                rounded
+                                transition
+                                ease-in-out
+                                m-0
+                                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
+                                    console.log(e.target.selectedOptions[0].textContent);
+                                    console.log()
+                                    setData((prevState) => ({
+                                        ...prevState, crust: e.target.selectedOptions[0].value, price: pizza.price.default 
+                                        + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
+                                        + (Number(Object.entries(pizza.price.size).filter((item) => item[0] === data.size )[0][1]))
+                                    }))
+                                }}>
+                                    {/* <option value="none">default</option> */}
+                                    {
+                                        
+                                        Object.entries(pizza.price.crust).map(([key, value]) => <option   key={key}  value={key} >{key}</option>)
                                     }
                                 </select>
                             </div>

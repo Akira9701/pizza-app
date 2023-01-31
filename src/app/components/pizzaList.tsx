@@ -14,7 +14,7 @@ const PizzaList: FC<PizzaList> = ({pizza}) => {
     return ( 
         <>
             <div>
-                <ul className='pizza-list grid 2xl:grid-cols-6 md:grid-cols-4 gap-4 mb-1'>
+                <ul className='pizza-list grid 2xl:grid-cols-5 md:grid-cols-4 gap-16 mb-1'>
                     {
                         pizza.map((item) => <PizzaItem key={item.id} pizza={item}   />)
                     }

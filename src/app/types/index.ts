@@ -20,5 +20,12 @@ export interface IPizzaItem {
             small: number
         }
     }
+}
 
+export interface IPizzaItemBasket{
+    item: {
+        id: number,
+        size: string,
+        crust: string
+    }
 }

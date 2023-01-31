@@ -1,5 +1,6 @@
+import { IPizzaItemBasket } from './../types/index';
 import { IPizzaItem } from '../types/index';
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, compose } from "@reduxjs/toolkit";
 export const getPizza = createAsyncThunk<IPizzaItem[], undefined, {rejectValue: string}>(
     'pizza/getPizza',
     async function(_, {rejectWithValue}){
@@ -17,13 +18,15 @@ export const getPizza = createAsyncThunk<IPizzaItem[], undefined, {rejectValue: 
 
 type PizzaState = {
     pizza: IPizzaItem[]
-    basket: IPizzaItem[]
+    basketDisplay: IPizzaItem[]
+    basketSend: IPizzaItemBasket[];
     order: IPizzaItem
 }
 
 const initialState: PizzaState = {
     pizza: [],
-    basket: [],
+    basketDisplay: [],
+    basketSend: [],
     order: {
         classifications: {
             new: true,
@@ -57,28 +60,34 @@ const pizaSlice = createSlice({
         //     console.log(action);
         //     state.pizza = [...action.payload]
         // },
-        addPizzaToBasket(state, action){
-            state.basket = [...state.basket, action.payload];
-            console.log(state.basket)
+        addPizzaToBasketDisplay(state, action){
+            state.basketDisplay.push(action.payload);
+        },
+        addPizzaToBasketSend(state, action){
+            state.basketSend.push(action.payload);
+            console.log(state.basketSend);
         },
         addPizzaToOrder(state, action){
             state.order = {...action.payload};
             console.log(state.order)
-        }
+        },
+        changePizzaBasketSend(state, action){
+            const basketSend = [...state.basketSend];
+            console.log(action.payload.item);
+            basketSend[action.payload.index] = action.payload.item;
+            state.basketSend = basketSend;
+            console.log(state.basketSend);
+        },
+        removePizzaFromBasket(state, action){
+            const basketSend = [...state.basketSend]
+            const basketDisplay = [...state.basketDisplay]
+            basketSend.splice(action.payload, 1)
+            basketDisplay.splice(action.payload, 1)
+            state.basketDisplay = basketDisplay;
+            state.basketSend = basketSend;
+        },
 
     },
-    // extraReducers: {
-    //     [getPizza.pending]: (state, action) => {
-    //         console.log('Loading')
-    //     },
-    //     [getPizza.fulfilled]: (state, action) => {
-    //         console.log('Set')
-
-    //     },
-    //     [getPizza.rejected]: (state, action) => {
-
-    //     },
-    // }
     extraReducers: (builder) => {
         builder
             .addCase(getPizza.pending, (state, action) => {
@@ -93,5 +102,5 @@ const pizaSlice = createSlice({
             })
     }
 })
-export const {addPizzaToBasket, addPizzaToOrder} = pizaSlice.actions;
+export const {addPizzaToBasketDisplay,addPizzaToBasketSend , addPizzaToOrder, changePizzaBasketSend, removePizzaFromBasket} = pizaSlice.actions;
 export default pizaSlice.reducer;
