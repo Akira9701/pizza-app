@@ -9,10 +9,10 @@ const HeaderComponent:FC = () => {
             <nav>
                 <ul>
                     <li>
-                        <NavLink to='/' className={({ isActive }) => ((isActive ? 'text-sky-900 	' : 'text-black') + " font-semibold	font-montserrat" ) } end>Главная</NavLink>
+                        <NavLink to='/' className={({ isActive }) => ((isActive ? 'text-sky-900 ' : 'text-black') + " font-semibold	font-montserrat" ) } end>Главная</NavLink>
                     </li>
                     <li>
-                        <NavLink to='basket' className={({ isActive }) => ((isActive ? 'text-sky-900 	' : 'text-black') + " font-semibold font-montserrat") } >Корзина</NavLink>
+                        <NavLink to='basket' className={({ isActive }) => ((isActive ? 'text-sky-900 ' : 'text-black') + " font-semibold font-montserrat") } >Корзина</NavLink>
                     </li>
                
                 </ul>
