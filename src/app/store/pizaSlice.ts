@@ -1,6 +1,6 @@
 import { IPizzaItemBasket } from './../types/index';
 import { IPizzaItem } from '../types/index';
-import { createSlice, createAsyncThunk, compose } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 export const getPizza = createAsyncThunk<IPizzaItem[], undefined, {rejectValue: string}>(
     'pizza/getPizza',
     async function(_, {rejectWithValue}){
