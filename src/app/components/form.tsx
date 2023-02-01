@@ -356,17 +356,18 @@ const Form: FC<IFormStatus> = ({side}) => {
                 w-full
                 px-6
                 py-2.5
-                bg-yellow-500
+                bg-sky-800
                 text-white
                 font-medium
+                font-montserrat
                 text-xs
                 leading-tight
                 uppercase
                 rounded
                 shadow-md
-                hover:bg-yellow-600 hover:shadow-lg
-                focus:bg-yellow-500 focus:shadow-lg focus:outline-none focus:ring-0
-                active:bg-yellow-500 active:shadow-lg
+                hover:bg-sky-900 hover:shadow-lg
+                focus:bg-sky-900 focus:shadow-lg focus:outline-none focus:ring-0
+                active:bg-sky-900 active:shadow-lg
                 transition
                 duration-150
                 ease-in-out" >Заказать пиццу</button>

@@ -35,7 +35,7 @@ const initialState: PizzaState = {
         },
         id: 0,
         img: "",
-        ingridients: [],
+        ingredients: [],
         name: "",
         price:{
             default: 0,

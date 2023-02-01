@@ -6,7 +6,7 @@ export interface IPizzaItem {
     },
     id: number,
     img: string,
-    ingridients: string[],
+    ingredients: string[],
     name: string,
     price:{
         default: number,
