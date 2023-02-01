@@ -73,17 +73,14 @@ const pizaSlice = createSlice({
         },
         addPizzaToOrder(state, action){
             state.order = {...action.payload};
-            console.log(state.order)
         },
         addToBasketSendAlone(state, action){
             state.basketSend = [action.payload]
         },
         changePizzaBasketSend(state, action){
             const basketSend = [...state.basketSend];
-            console.log(action.payload.item);
             basketSend[action.payload.index] = action.payload.item;
             state.basketSend = basketSend;
-            console.log(state.basketSend);
         },
         removePizzaFromBasket(state, action){
             const basketSend = [...state.basketSend]
@@ -102,12 +99,9 @@ const pizaSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getPizza.pending, (state, action) => {
-                console.log('Loading')
             }).addCase(getPizza.fulfilled, (state, action) => {
                 state.pizza = action.payload;
-                console.log('Seted')
             }).addCase(getPizza.rejected, (state, action) => {
-                console.log('Danger')
             })
     }
 })

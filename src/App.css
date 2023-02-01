@@ -42,5 +42,7 @@
 
 
 main{
-  background-image: url(./app/assets/img/bg.png);
+  /* background-image: url(./app/assets/img/bg.png); */
+  background-color: rgb(241 245 249);
+
 }

@@ -9,7 +9,7 @@ interface IPizzaItemBasketComponent{
 }
 const BasketItem: FC<IPizzaItemBasketComponent> = ({item, index}) => {
     const dispatch = useAppDispatch();
-    const [sendData,setSendData] = useState({id: item.id, size: 'small', crust: 'cheezy'})
+    const [sendData,setSendData] = useState({id: item.id, size: 'small', crust: 'cheesy'})
     const send = useAppSelector(state => state.pizza.basketSend)
     const toggleData = (e: React.ChangeEvent<HTMLSelectElement>, type:string) => {
             setSendData((prevState) => ({
@@ -23,12 +23,20 @@ const BasketItem: FC<IPizzaItemBasketComponent> = ({item, index}) => {
     useEffect(() => {
         dispatch(changePizzaBasketSend({item: {...sendData}, index:index}))
     }, [sendData])
+    // console.log(Object.entries(item.price.crust).filter((item) => item[0] === sendData.crust )[0][1]);
+
     return ( 
         <div key={item.id} className='drop-shadow-lg p-4 rounded-md flex bg-slate-200 items-center mb-8	justify-between		'>
             <img className='mr-6' src={item.img} alt="" />
             <div className="info-block mr-6">
                 <p className='info-title text-2xl'>{item.name}</p>
-                <p className='info-desc'></p>
+                <p className='info-price'>
+                    {
+                        item.price.default
+                        + Object.entries(item.price.crust).filter((item) => item[0] === sendData.crust )[0][1]
+                        + Object.entries(item.price.size).filter((item) => item[0] === sendData.size )[0][1]
+                    }
+                </p>
             </div>
             <div className="data-block">
                 <div className="flex justify-center">

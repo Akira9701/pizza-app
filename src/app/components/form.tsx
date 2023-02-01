@@ -54,16 +54,15 @@ interface IFormStatus {
 }
 
 const Form: FC<IFormStatus> = ({side}) => {
+    const dispatch = useAppDispatch();
     const pizza:IPizzaItem = useAppSelector(state => state.pizza.order);
     const toggleForm = (e:Element) => {
         if(e.target.classList.contains('form-container')) e.target.classList.add('hidden');
     }
     const sendPizzas = useAppSelector(state=>state.pizza.basketSend);
     const displayPizzas = useAppSelector(state=>state.pizza.basketDisplay);
-    const dispatch = useAppDispatch();
-
-    const [selectedPizza, setSelectedPiza] = useState('');
-    const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"large", crust: "cheesy", price: pizza.price.default,});
+    // const [selectedPizza, setSelectedPiza] = useState('');
+    const [data, setData] = useState({name: "", surname: "", patronymic: "" , city: "", street: "", home: "", room: "", message: "", birthday: "", registration: "", comment: "", size:"small", crust: "cheesy", price: pizza.price.default,});
     const [errors, setErrors] = useState({name: "", surname: "", patronymic: "", city: "", street: "", home: "", room: "", message: "",  birthday: "", registration: ""});
     const validatorConfig = {
         name: {isRequired: {message: "Обязательное Поле Имя не заполнено"}, min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 32", value: 32}},
@@ -76,6 +75,7 @@ const Form: FC<IFormStatus> = ({side}) => {
         room: {isRequired: {message: "Обязательное Поле Квартира не заполнено"},  min : {message: "Символов должно быть больше 1", value: 1}, max : {message: "Символов должно быть меньше 10", value: 10}},
         registration: { min : {message: "Символов должно быть больше 2", value: 2}, max : {message: "Символов должно быть меньше 50", value: 50}},        
     }
+    
     const handleValidation = (data:any , validatorConfig:any):boolean => {
         
         let errorsCurent = {...errors};
@@ -85,7 +85,6 @@ const Form: FC<IFormStatus> = ({side}) => {
                 let stop = false
                 switch(danger){
                     case 'isRequired':{
-                        console.log(1)
                         data[key].length === 0 ? (errorsCurent[key as keyof ErrorsCurent] = validatorConfig[key][danger].message, status = false, stop = true) : errorsCurent[key as keyof ErrorsCurent] = ""
                         break
                         
@@ -123,7 +122,6 @@ const Form: FC<IFormStatus> = ({side}) => {
             }
             continue
         }
-        console.log(errorsCurent);
         setErrors(errorsCurent);
         return status;
         
@@ -134,7 +132,6 @@ const Form: FC<IFormStatus> = ({side}) => {
         }))
     }
     const handleSubmit = (e:React.SyntheticEvent) => {
-        console.log(sendPizzas[0]);
  
         e.preventDefault();
         if(handleValidation(data, validatorConfig)){
@@ -173,16 +170,17 @@ const Form: FC<IFormStatus> = ({side}) => {
     useEffect(() => {
         const names = displayPizzas.map((item) => item.name).join();
         console.log(names);
-        setSelectedPiza(names);
+        // setSelectedPiza(names);
         setData((prevState) => ({
             ...prevState, price:pizza.price.default
             + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === data.crust )[0][1])
             + Number(Object.entries(pizza.price.size).filter((item) => item[0] === data.size )[0][1])
             ,
         }))
+
         
         
-    }, [pizza])
+    }, [displayPizzas])
 
 
     const formAny = () => {
@@ -206,17 +204,16 @@ const Form: FC<IFormStatus> = ({side}) => {
                     transition
                     ease-in-out
                     m-0
-                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
-                        console.log(e.target.selectedOptions[0].value)
+                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" defaultValue='small' aria-label="Default select example" onChange={(e) =>{
                         setData((prevState) => ({
                             ...prevState, size: e.target.selectedOptions[0].value, price: pizza.price.default 
-                            + Number(Object.entries(pizza.price.size).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
+                            + Number(Object.entries(pizza.price.size).filter((item) => item[0] === e.target.value )[0][1])
                             + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === data.crust )[0][1])
                         }))
                     }}>
                         {
                             
-                            Object.entries(pizza.price.size).map(([key, value]) => <option key={key}  value={key}>{key}</option>)
+                            Object.entries(pizza.price.size).map(([key, value], index) => <option key={key}  value={key}>{key}</option>)
                         }
                     </select>
                 </div>
@@ -240,8 +237,6 @@ const Form: FC<IFormStatus> = ({side}) => {
                     ease-in-out
                     m-0
                     focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example" onChange={(e) =>{
-                        console.log(e.target.selectedOptions[0].textContent);
-                        console.log()
                         setData((prevState) => ({
                             ...prevState, crust: e.target.selectedOptions[0].value, price: pizza.price.default 
                             + Number(Object.entries(pizza.price.crust).filter((item) => item[0] === e.target.selectedOptions[0].textContent )[0][1])
@@ -260,7 +255,6 @@ const Form: FC<IFormStatus> = ({side}) => {
 
         )
     }
-
     return ( 
         <div className="form-container hidden  fixed w-full h-full top-0 left-0 bg-black/[0.8]	flex items-center justify-center" onClick={toggleForm} >
             <div className="block p-6 rounded-lg shadow-lg bg-white ">
@@ -275,7 +269,6 @@ const Form: FC<IFormStatus> = ({side}) => {
                                 <input type="checkbox"
                                 className="htmlForm-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                 id="exampleCheck2" onChange={(e) => {
-                                    console.log()
                                     setData((prevState) => ({...prevState, patronymic: e.target.checked ? "Отсутствует" : ""}));
                                 }}/>
                                 <label className="htmlForm-check-label inline-block text-gray-800" htmlFor="exampleCheck2">Нету отчества</label>
@@ -313,7 +306,7 @@ const Form: FC<IFormStatus> = ({side}) => {
                             ease-in-out
                             m-0
                             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="exampleInputEmail2"
-                            aria-describedby="emailHelp" placeholder="Enter email" value={selectedPizza} readOnly={true}
+                            aria-describedby="emailHelp" placeholder="Enter email" value={displayPizzas.map((item) => item.name).join()} readOnly={true}
                             />
                         </div>
                         <div>
@@ -354,7 +347,11 @@ const Form: FC<IFormStatus> = ({side}) => {
                 </div>
              
 
-                <p className='price mb-4 text-2xl'>{data.price} руб. к оплате</p>
+                <p className='price mb-4 text-2xl'>{side !== 'basket' ? data.price : displayPizzas.reduce(function (currentSum, currentItem, index) {
+                        return currentSum + currentItem.price.default
+                            + Object.entries(currentItem.price.crust).filter((item) => item[0] === sendPizzas[index].crust )[0][1]
+                            + Object.entries(currentItem.price.size).filter((item) => item[0] === sendPizzas[index].size )[0][1]
+                        }, 0)} руб. к оплате</p>
                 <button type="submit" className="
                 w-full
                 px-6

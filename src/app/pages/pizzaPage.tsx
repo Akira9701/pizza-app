@@ -12,7 +12,6 @@ const PizzaPage = () => {
             </div>
         )
     }else{
-        console.log(pizzaItems);
 
         return ( 
             <PizzaList pizza={pizzaItems} />

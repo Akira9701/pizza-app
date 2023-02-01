@@ -7,6 +7,9 @@ module.exports = {
     ],
     theme: {
       extend: {},
+      fontFamily: {
+        "montserrat" : ["Montserrat"]
+      }
     },
     plugins: [
         require('tw-elements/dist/plugin')
