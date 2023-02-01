@@ -11,7 +11,7 @@ const HeaderComponent:FC = () => {
             <nav>
                 <ul className='items-center'>
                     <li>
-                        <NavLink to='/' className={({ isActive }) => ((isActive ? 'text-sky-900 	' : 'text-black') + " font-semibold	font-montserrat" ) } end>Главная</NavLink>
+                        <NavLink to='/' className={({ isActive }) => ((isActive ? 'text-sky-900 ' : 'text-black') + " font-semibold	font-montserrat" ) } end>Главная</NavLink>
                     </li>
                     <li className='flex items-center'>
                         <NavLink to='basket' className={({ isActive }) => ((isActive ? 'text-sky-900 	' : 'text-black') + " font-semibold font-montserrat") } >Корзина</NavLink>
