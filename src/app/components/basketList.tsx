@@ -1,29 +1,42 @@
-import React, { Component } from 'react'
-import { useAppSelector } from '../hooks/reduxHooks';
-import BasketItem from './basketItem';
+import React, { FC } from 'react';
 
-const BasketList = () => {
-    const pizzaItemsDisplay =  useAppSelector(state => state.pizza.basketDisplay);
-    
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { changePizzaBasketSend, removePizzaFromBasket } from '../store/pizaSlice';
 
+import BasketItem from './BasketItem';
 
-    if(pizzaItemsDisplay.length > 0){
-        return ( 
-            <div className='wrap'>
-                {
-                    pizzaItemsDisplay.map((item, index) => {
+const BasketList: FC = () => {
+    const dispatch = useAppDispatch();
+    const pizzaItemsDisplay = useAppSelector((state) => state.pizza.basketDisplay);
+    const removeItem = (index: number): void => {
+        dispatch(removePizzaFromBasket(index));
+    };
+    const changeItem = (el: object): void => {
+        console.log(el);
+        dispatch(changePizzaBasketSend(el));
+    };
+
+    return (
+        <>
+            {!!pizzaItemsDisplay.length ? (
+                <div className="wrap">
+                    {pizzaItemsDisplay.map((item, index) => {
                         return (
-    
-                            <BasketItem key={item.id} item={item} index={index}  />
-                            
-                        )
-                    })
-                }
-            </div>    
-        );
-    }else{
-        return <p>Ваша корзина пуста</p>
-    }
-}
- 
+                            <BasketItem
+                                key={item.id}
+                                item={item}
+                                index={index}
+                                removeItem={removeItem}
+                                changeItem={changeItem}
+                            />
+                        );
+                    })}
+                </div>
+            ) : (
+                <p>Ваша корзина пуста</p>
+            )}
+        </>
+    );
+};
+
 export default BasketList;

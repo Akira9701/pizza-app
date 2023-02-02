@@ -1,23 +1,25 @@
-import React, { Component } from 'react'
-import PizzaList from '../components/pizzaList';
+import React, { FC } from 'react';
+
+import PizzaList from '../components/PizzaList';
 import { useAppSelector } from '../hooks/reduxHooks';
-const PizzaPage = () => {
-    const pizzaItems =  useAppSelector(state => state.pizza.pizza);
-    if(pizzaItems.length === 0){
+
+const PizzaPage: FC = () => {
+    const pizzaItems = useAppSelector((state) => state.pizza.pizza);
+    console.log(pizzaItems);
+    if (pizzaItems.length === 0) {
         return (
-            <div className="flex justify-center items-center">
-                <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-300" role="status">
+            <div className="flex items-center justify-center">
+                <div
+                    className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-blue-300"
+                    role="status"
+                >
                     <span className="visually-hidden">Loading...</span>
                 </div>
             </div>
-        )
-    }else{
-
-        return ( 
-            <PizzaList pizza={pizzaItems} />
         );
+    } else {
+        return <PizzaList pizza={pizzaItems} />;
     }
+};
 
-}
- 
-export default PizzaPage
+export default PizzaPage;

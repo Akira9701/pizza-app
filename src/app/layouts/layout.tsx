@@ -1,15 +1,17 @@
-import React, { Component } from 'react'
-import HeaderComponent from '../components/header'
-import { Outlet } from "react-router-dom";
-const Layout = () => {
+import React, { FC } from 'react';
+import { Outlet } from 'react-router-dom';
+
+import HeaderComponent from '../components/Header';
+
+const Layout: FC = () => {
     return (
-        <div className='container'>
+        <div className="container">
             <HeaderComponent />
             <main>
-                <Outlet/>
+                <Outlet />
             </main>
         </div>
     );
-}
- 
+};
+
 export default Layout;

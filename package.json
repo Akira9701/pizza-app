@@ -1,31 +1,63 @@
 {
-  "name": "pizza-app",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.9.1",
-    "axios": "^1.2.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-redux": "^8.0.5",
-    "react-router-dom": "^6.8.0",
-    "tw-elements": "^1.0.0-alpha13"
-  },
-  "devDependencies": {
-    "@types/react": "^18.0.26",
-    "@types/react-dom": "^18.0.9",
-    "@vitejs/plugin-react": "^3.0.0",
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.21",
-    "prettier": "2.8.3",
-    "tailwindcss": "^3.2.4",
-    "typescript": "^4.9.3",
-    "vite": "^4.0.0"
-  }
+    "name": "pizza-app",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "lint": "eslint --ext .ts,.tsx src --fix",
+        "format": "prettier --write ./src/**/*.{js,jsx,ts,tsx,css,md,json}"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "^1.9.1",
+        "axios": "^1.2.5",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-plugin-jsx-a11y": "^6.7.1",
+        "eslint-plugin-simple-import-sort": "^10.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-redux": "^8.0.5",
+        "react-router-dom": "^6.8.0",
+        "tw-elements": "^1.0.0-alpha13"
+    },
+    "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+        "@types/react": "^18.0.26",
+        "@types/react-dom": "^18.0.9",
+        "@typescript-eslint/eslint-plugin": "^5.50.0",
+        "@typescript-eslint/parser": "^5.50.0",
+        "@vitejs/plugin-react": "^3.0.0",
+        "autoprefixer": "^10.4.13",
+        "eslint": "^8.0.0",
+        "eslint-config-prettier": "^8.6.0",
+        "eslint-config-react-app": "^7.0.1",
+        "eslint-plugin-import": "^2.27.5",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-react": "^7.32.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "postcss": "^8.4.21",
+        "prettier": "^2.8.3",
+        "prettier-plugin-organize-imports": "^3.2.2",
+        "prettier-plugin-tailwindcss": "^0.2.2",
+        "tailwindcss": "^3.2.4",
+        "typescript": "^4.9.5",
+        "vite": "^4.0.0"
+    },
+    "prettier": {
+        "semi": true,
+        "tabWidth": 4,
+        "printWidth": 100,
+        "singleQuote": true,
+        "trailingComma": "none",
+        "jsxBracketSameLine": true,
+        "proseWrap": "never",
+        "organizeImportsSkipDestructiveCodeActions": true,
+        "plugins": [
+            "prettier-plugin-organize-imports",
+            "prettier-plugin-tailwindcss"
+        ],
+        "pluginSearchDirs": false
+    }
 }

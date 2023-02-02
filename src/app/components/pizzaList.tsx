@@ -1,38 +1,69 @@
-import React, { Component, FC } from 'react'
-import PizzaItem from './pizzaItem'
-import Form from './form'
+import React, { FC } from 'react';
+
+import { useAppDispatch } from '../hooks/reduxHooks';
+import {
+    addPizzaToBasketDisplay,
+    addPizzaToBasketDisplayAlone,
+    addPizzaToBasketSend,
+    addToBasketSendAlone
+} from '../store/pizaSlice';
 import { IPizzaItem } from '../types/index';
 
-interface PizzaList {
-    pizza: IPizzaItem[]
+import Form from './Form';
+import PizzaItem from './PizzaItem';
+
+interface IPizzaList {
+    pizza: IPizzaItem[];
 }
 
-const PizzaList: FC<PizzaList> = ({pizza}) => {
+const PizzaList: FC<IPizzaList> = ({ pizza }) => {
+    const dispatch = useAppDispatch();
 
+    const handleAddItemToOrder = (item: IPizzaItem): void => {
+        dispatch(
+            addToBasketSendAlone({
+                id: item.id,
+                size: 'small',
+                crust: 'cheesy'
+            })
+        );
+        dispatch(addPizzaToBasketDisplayAlone(item));
+        const formContainer = document.querySelector('.form-container');
+        formContainer?.classList.toggle('hidden');
+    };
 
+    const handleAddItemToBasket = (item: IPizzaItem): void => {
+        dispatch(addPizzaToBasketDisplay(item));
+        dispatch(
+            addPizzaToBasketSend({
+                id: item.id,
+                size: 'small',
+                crust: 'cheesy'
+            })
+        );
+    };
 
-    return ( 
+    return (
         <>
             <div>
-                <ul className='pizza-list grid 2xl:grid-cols-5 md:grid-cols-4 gap-16 mb-1'>
-                    {
-                        pizza.map((item) => <PizzaItem key={item.id} pizza={item}   />)
-                    }
+                <ul className="pizza-list mb-1 grid gap-16 md:grid-cols-4 2xl:grid-cols-5">
+                    {pizza.map((item) => (
+                        <li
+                            key={item.id}
+                            className="pizza-item flex cursor-pointer	flex-col items-center justify-center"
+                        >
+                            <PizzaItem
+                                pizza={item}
+                                addToBasket={handleAddItemToBasket}
+                                addToOrder={handleAddItemToOrder}
+                            />
+                        </li>
+                    ))}
                 </ul>
-                <div className="flex space-x-2 justify-center">
-                    {/* <button
-                        type="button"
-                        data-mdb-ripple="true"
-                        data-mdb-ripple-color="light"
-                        className="rounded-md text-2xl inline-block px-6 py-4 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase shadow-md hover:bg-yellow-500 hover:shadow-lg focus:bg-yellow-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-500 active:shadow-lg transition duration-150 ease-in-out"
-                        onClick={toggleActive}
-                    >Заказать пиццу</button> */}
-                </div>
             </div>
-            <Form side='not-basket' />
+            <Form side="not-basket" />
         </>
-
     );
-}
- 
+};
+
 export default PizzaList;

@@ -1,14 +1,13 @@
-body{
+body {
     /* background-color: #191F2C !important; */
     /* background-image: url('../img/bg.png'); */
     /* font-family: 'Montserrat'; */
     background-color: rgb(241 245 249);
 }
-.container{
+.container {
     max-width: 1440px;
     margin: 0 auto;
 }
-
 
 header {
     /* width: 100%; */
@@ -18,26 +17,22 @@ header {
     position: relative;
 }
 
-
-
 header nav ul {
     display: flex;
     padding-top: 40px;
     padding-bottom: 40px;
 }
 
-header nav ul li{
+header nav ul li {
     margin-right: 20px;
 }
 
-header nav ul li a{
+header nav ul li a {
     text-decoration: none;
     color: white;
 }
 
-
-
-.logo-wrap p{
+.logo-wrap p {
     /* width: fit-content;
     color: white;
     font-family: 'Roboto';
@@ -46,7 +41,6 @@ header nav ul li a{
     position: absolute;
     top: 31px;
     left: 79px; */
-    
 }
 
 /* .pizza-list{
@@ -54,4 +48,3 @@ header nav ul li a{
     grid-template-columns: ;
 }
  */
-

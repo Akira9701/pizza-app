@@ -1,39 +1,35 @@
-import React, { FC } from 'react'
-interface IField {
-    value: string,
-    title: string,
-    name: string,
-    type: string,
-    error: string,
-    readonly?: boolean,
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
-const TextField:FC<IField> = ({value, title, onChange, name, type, error, readonly}) => {
-    return ( 
-        <div className="htmlForm-group mb-2  w-72 h-24	">
-            <label htmlFor="exampleInputEmail2" className="htmlForm-label inline-block mb-2 text-gray-700">{title}</label>
-            <input type={type} className="htmlForm-control
-            block
-            w-full
-            px-3
-            py-1.5
-            text-base
-            font-normal
-            text-gray-700
-            bg-white bg-clip-padding
-            border border-solid border-gray-300
-            rounded
-            transition
-            ease-in-out
-            m-0
-            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="exampleInputEmail2"
-            aria-describedby="emailHelp" placeholder={title} value={value} name={name} onChange={onChange}/>
-            {
-                error.length > 0 ? <div className="invalid-feedback block">{error}</div> : ""
-            }
+import React, { FC } from 'react';
 
-        </div>    
-    );
+interface IField {
+    value: string;
+    title: string;
+    name: string;
+    type: string;
+    error: string;
+    readonly?: boolean;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
- 
+const TextField: FC<IField> = ({ value, title, onChange, name, type, error, readonly }) => {
+    return (
+        <div className="htmlForm-group mb-2  h-24 w-72	">
+            <label htmlFor={name} className="htmlForm-label mb-2 inline-block text-gray-700">
+                {title}
+            </label>
+            <input
+                type={type}
+                className="htmlForm-control m-0 block w-full rounded border border-solid border-gray-300 bg-white
+                bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition ease-in-out
+                focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none"
+                readOnly={readonly}
+                aria-describedby="emailHelp"
+                placeholder={title}
+                value={value}
+                name={name}
+                onChange={onChange}
+            />
+            {!!error.length && <div className="invalid-feedback block">{error}</div>}
+        </div>
+    );
+};
+
 export default TextField;
